@@ -12,6 +12,21 @@ class Note {
   constructor(noteDom, notebook) {
     this.title = noteDom['Title'][0]
     this.notebook = notebook
+    this.content = noteDom['Content'][0]
+    this.attributes = new NoteAttributes(noteDom['NoteAttributes']?.[0])
+  }
+}
+
+class NoteAttributes {
+  constructor(noteAttributesDom) {
+    this.Author = noteAttributesDom?.['Author']?.[0]
+    this.Source = noteAttributesDom?.['Source']?.[0]
+    this.Latitude = noteAttributesDom?.['Latitude']?.[0]
+    this.Longitude = noteAttributesDom?.['Longitude']?.[0]
+    this.Altitude = noteAttributesDom?.['Altitude']?.[0]
+    this.SubjectDate = noteAttributesDom?.['SubjectDate']?.[0]
+    this.SourceApplication = noteAttributesDom?.['SourceApplication']?.[0]
+    this.SourceUrl = noteAttributesDom?.['SourceUrl']?.[0]
   }
 }
 
@@ -34,14 +49,17 @@ function mapNotes(evernote) {
 async function main() {
   const xml = fs.readFileSync('evernote.nnex')
   const js = await(xml2js.parseStringPromise(xml));
-  const notes = mapNotes(js['nixnote-export'])
-  for(note of notes) {
-    console.log(`${note.notebook.name} / ${note.title}`)
+  try {
+    const notes = mapNotes(js['nixnote-export'])
+    for(note of notes) {
+      console.log(`${note.notebook.name} / ${note.title}`)
+    }
+  } catch(err) {
+    console.log(err)
   }
 }
 
 /* TODO
-Note / content = more XML includeing 'en-media hash="..."'
 Note / NoteResource
 - Guid
 - Mime (image/jpeg)
@@ -51,13 +69,5 @@ Note / NoteResource
 - ResourceAttributes
   - Timestamp (optional)
   - FileName (example.jpg -- sometimes missing!)
-Note / Attributes (all optional)
-- SubjectDate
-- Author
-- Source
-- Latitude
-- Longitude
-- SourceApplication
-- SourceUrl
 */
 main()
