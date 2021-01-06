@@ -40,4 +40,24 @@ async function main() {
   }
 }
 
+/* TODO
+Note / content = more XML includeing 'en-media hash="..."'
+Note / NoteResource
+- Guid
+- Mime (image/jpeg)
+- Data
+  - Body (encoded as hex?)
+  - BodyHash (referenced by en-media hash in content)
+- ResourceAttributes
+  - Timestamp (optional)
+  - FileName (example.jpg -- sometimes missing!)
+Note / Attributes (all optional)
+- SubjectDate
+- Author
+- Source
+- Latitude
+- Longitude
+- SourceApplication
+- SourceUrl
+*/
 main()
