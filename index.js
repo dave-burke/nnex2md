@@ -78,14 +78,17 @@ function mapNotes(evernote) {
   }, [])
 }
 
+function writeNoteToFile(note) {
+  console.log(`${note.notebook.name} / ${note.title}`)
+}
+
 async function main() {
   const xml = fs.readFileSync('evernote.nnex')
   const js = await(xml2js.parseStringPromise(xml));
   try {
     const notes = mapNotes(js['nixnote-export'])
-    for(note of notes) {
-      console.log(`${note.notebook.name} / ${note.title}`)
-    }
+    const test = notes.find(note => note.content.length > 300 && note?.resources?.[0].data?.body !== undefined)
+    writeNoteToFile(test)
   } catch(err) {
     console.log(err)
   }
