@@ -1,30 +1,43 @@
 const fs = require('fs')
 const xml2js = require('xml2js')
 
+class Notebook {
+  constructor(notebookDom) {
+    this.guid = notebookDom['Guid'][0]
+    this.name = notebookDom['Name'][0]
+  }
+}
+
+class Note {
+  constructor(noteDom, notebook) {
+    this.title = noteDom['Title'][0]
+    this.notebook = notebook
+  }
+}
+
 function mapNotes(evernote) {
   const notebooks = evernote['Notebook']
-  const notebookNamesByGuid = notebooks.reduce((map, notebook) => {
-    map.set(notebook['Guid'], notebook['Name'])
-    return map
-  }, new Map())
+  const notebookNamesByGuid = notebooks
+    .map(notebookDom => new Notebook(notebookDom))
+    .reduce((map, notebook) => {
+      map.set(notebook.guid, notebook)
+      return map
+    }, new Map())
 
   const notes = evernote['Note']
-  const notesByNotebookName = notes.reduce((map, note) => {
-    const notebookGuid = note['NotebookGuid']
-    const notebookName = notebookNamesByGuid.get(notebookGuid)
-    console.log(`'${notebookGuid}' -> ${notebookName} (${notebookNamesByGuid.has(notebookGuid)})`)
-    const noteTitle = note['Title']
-    map.set(noteTitle, notebookName)
-    return map
-  }, new Map())
-  console.log(notebookNamesByGuid)
-  return notesByNotebookName
+  return notes.reduce((arr, noteDom) => {
+    const note = new Note(noteDom, notebookNamesByGuid.get(noteDom['NotebookGuid'][0]));
+    return [...arr, note]
+  }, [])
 }
 
 async function main() {
   const xml = fs.readFileSync('evernote.nnex')
   const js = await(xml2js.parseStringPromise(xml));
-  return mapNotes(js['nixnote-export'])
+  const notes = mapNotes(js['nixnote-export'])
+  for(note of notes) {
+    console.log(`${note.notebook.name} / ${note.title}`)
+  }
 }
 
-main()//.then(console.log)
+main()
