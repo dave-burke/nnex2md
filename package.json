@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "turndown": "^7.0.0",
     "xml2js": "^0.4.23"
   }
 }

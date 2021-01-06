@@ -1,5 +1,8 @@
 const fs = require('fs')
 const xml2js = require('xml2js')
+const TurndownService = require('turndown')
+
+const turndownService = new TurndownService()
 
 class Notebook {
   constructor(notebookDom) {
@@ -80,6 +83,11 @@ function mapNotes(evernote) {
 
 function writeNoteToFile(note) {
   console.log(`${note.notebook.name} / ${note.title}`)
+  let markdown = turndownService.turndown(note.content)
+  markdown = markdown.replace(/\n\s+\n/g, '\n\n') // trim whitespace-only lines
+  markdown = markdown.replace(/\n{3,}/g, '\n\n') // never need more than 2 line breaks
+  markdown = markdown.replace(/\n\\\*/g, '*') // Asterisks at the beginning of the line were probably intentional
+  console.log(markdown)
 }
 
 async function main() {
