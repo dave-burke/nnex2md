@@ -2,7 +2,9 @@ const fs = require('fs')
 const xml2js = require('xml2js')
 const TurndownService = require('turndown')
 
-const turndownService = new TurndownService()
+const turndownService = new TurndownService({
+  bulletListMarker: '-',
+})
 
 class Notebook {
   constructor(notebookDom) {
@@ -16,23 +18,10 @@ class Note {
     this.title = noteDom['Title'][0]
     this.notebook = notebook
     this.content = noteDom['Content'][0]
-    this.attributes = new NoteAttributes(noteDom['Attributes']?.[0])
+    this.attributes = noteDom['Attributes']?.[0]
     this.resources = noteDom['NoteResource']
       ?.map(noteResourceDom => new NoteResource(noteResourceDom))
       ?.reduce((arr, resource) => [...arr, resource], [])
-  }
-}
-
-class NoteAttributes {
-  constructor(noteAttributesDom) {
-    this.Author = noteAttributesDom?.['Author']?.[0]
-    this.Source = noteAttributesDom?.['Source']?.[0]
-    this.Latitude = noteAttributesDom?.['Latitude']?.[0]
-    this.Longitude = noteAttributesDom?.['Longitude']?.[0]
-    this.Altitude = noteAttributesDom?.['Altitude']?.[0]
-    this.SubjectDate = noteAttributesDom?.['SubjectDate']?.[0]
-    this.SourceApplication = noteAttributesDom?.['SourceApplication']?.[0]
-    this.SourceUrl = noteAttributesDom?.['SourceUrl']?.[0]
   }
 }
 
@@ -87,6 +76,10 @@ function writeNoteToFile(note) {
   markdown = markdown.replace(/\n\s+\n/g, '\n\n') // trim whitespace-only lines
   markdown = markdown.replace(/\n{3,}/g, '\n\n') // never need more than 2 line breaks
   markdown = markdown.replace(/\n\\\*/g, '*') // Asterisks at the beginning of the line were probably intentional
+  markdown += '\n'
+  for(const [ name, value ] of Object.entries(note.attributes)) {
+    markdown += `\n**${name}:** ${value}`
+  }
   console.log(markdown)
 }
 
