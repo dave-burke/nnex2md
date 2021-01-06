@@ -4,6 +4,14 @@ const TurndownService = require('turndown')
 
 const turndownService = new TurndownService({
   bulletListMarker: '-',
+  emDelimiter: '*',
+})
+
+turndownService.addRule('em-media', {
+  filter: ['en-media'],
+  replacement(content) {
+    return '' // TODO
+  }
 })
 
 async function main() {
