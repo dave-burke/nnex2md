@@ -13,7 +13,10 @@ class Note {
     this.title = noteDom['Title'][0]
     this.notebook = notebook
     this.content = noteDom['Content'][0]
-    this.attributes = new NoteAttributes(noteDom['NoteAttributes']?.[0])
+    this.attributes = new NoteAttributes(noteDom['Attributes']?.[0])
+    this.resources = noteDom['NoteResource']
+      ?.map(noteResourceDom => new NoteResource(noteResourceDom))
+      ?.reduce((arr, resource) => [...arr, resource], [])
   }
 }
 
@@ -27,6 +30,35 @@ class NoteAttributes {
     this.SubjectDate = noteAttributesDom?.['SubjectDate']?.[0]
     this.SourceApplication = noteAttributesDom?.['SourceApplication']?.[0]
     this.SourceUrl = noteAttributesDom?.['SourceUrl']?.[0]
+  }
+}
+
+class NoteResource {
+  constructor(noteResourceDom) {
+    this.mime = noteResourceDom?.['Mime']?.[0]
+    this.data = new Data(noteResourceDom['Data'][0])
+    this.attributes = new ResourceAttributes(noteResourceDom['ResourceAttributes']?.[0])
+  }
+}
+
+class Data {
+  constructor(dataDom) {
+    this.body = dataDom?.['Body']?.[0]
+    this.bodyHash = dataDom?.['BodyHash']?.[0]
+  }
+
+  get bytes() {
+    for (var bytes = [], c = 0; c < this.body.length; c += 2) {
+      bytes.push(parseInt(this.body.substr(c, 2), 16));
+    }
+    return bytes;
+  }
+}
+
+class ResourceAttributes {
+  constructor(resourceAttributesDom) {
+    this.timestamp = resourceAttributesDom?.['Timestamp']?.[0]
+    this.fileName = resourceAttributesDom?.['FileName']?.[0]
   }
 }
 
@@ -59,15 +91,4 @@ async function main() {
   }
 }
 
-/* TODO
-Note / NoteResource
-- Guid
-- Mime (image/jpeg)
-- Data
-  - Body (encoded as hex?)
-  - BodyHash (referenced by en-media hash in content)
-- ResourceAttributes
-  - Timestamp (optional)
-  - FileName (example.jpg -- sometimes missing!)
-*/
 main()
