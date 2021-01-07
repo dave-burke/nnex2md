@@ -45,17 +45,19 @@ function writeNoteToFile(note) {
   writeFile(note.notebook.name, `${note.title}.md`, markdown)
 }
 
-function writeFile(dir, fileName, data) {
-  if(!fs.existsSync(dir)) {
-    fs.mkdirSync(dir)
-  }
-  fs.writeFileSync(`${dir}/${fileName}`, data)
-}
-
 function saveResourcesAsFiles(note) {
   for(const resource of note.resources) {
     writeFile(`${note.notebook.name}/assets/`, resource.fileName, resource.data.bytes)
   }
+}
+
+function writeFile(dir, fileName, data) {
+  if(!fs.existsSync(dir)) {
+    fs.mkdirSync(dir)
+  }
+  // Windows has more restrictions, but I use Linux
+  const cleanedFileName = fileName.replace(/\//g, '_')
+  fs.writeFileSync(`${dir}/${cleanedFileName}`, data)
 }
 
 // Turndown converts HTML to JSON, and works fine with the XML note content.
