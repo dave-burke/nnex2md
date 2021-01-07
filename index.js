@@ -2,8 +2,8 @@ const fs = require('fs')
 const xml2js = require('xml2js')
 const TurndownService = require('turndown')
 
-async function main() {
-  const xml = fs.readFileSync('evernote.nnex')
+async function main(inputFile) {
+  const xml = fs.readFileSync(process.argv[2])
   const js = await(xml2js.parseStringPromise(xml));
   try {
     const notes = mapNotes(js['nixnote-export'])
