@@ -54,7 +54,7 @@ function writeFile(dir, fileName, data) {
 
 function saveResourcesAsFiles(note) {
   for(const resource of note.resources) {
-    // writeFile(`${note.notebook.name}/assets/`, resource.fileName, resource.data.bytes)
+    writeFile(`${note.notebook.name}/assets/`, resource.fileName, resource.data.bytes)
   }
 }
 
@@ -141,10 +141,13 @@ class Data {
 
   get bytes() {
     if(this.body === undefined) return undefined
-    for (var bytes = [], c = 0; c < this.body.length; c += 2) {
+    const bytes = []
+    // 'body' is a string of hexadecimal characters
+    // this converts it to an array of byte ints
+    for (let c = 0; c < this.body.length; c += 2) {
       bytes.push(parseInt(this.body.substr(c, 2), 16));
     }
-    return bytes;
+    return new Uint8Array(bytes);
   }
 }
 
