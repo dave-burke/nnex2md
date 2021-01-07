@@ -34,7 +34,6 @@ function mapNotes(evernote) {
 }
 
 function writeNoteToFile(note) {
-  console.log(`${note.notebook.name} / ${note.title}`)
   let markdown = turndownService.turndown(note.content)
   markdown = markdown.replace(/\n\s+\n/g, '\n\n') // trim whitespace-only lines
   markdown = markdown.replace(/\n{3,}/g, '\n\n') // never need more than 2 line breaks
@@ -43,7 +42,8 @@ function writeNoteToFile(note) {
   for(const [ name, value ] of Object.entries(note.attributes)) {
     markdown += `\n**${name}:** ${value}`
   }
-  console.log(markdown)
+  fs.mkdirSync(note.notebook.name)
+  fs.writeFileSync(`${note.notebook.name}/${note.title}.md`, markdown)
 }
 
 function saveResourcesAsFiles(note) {
