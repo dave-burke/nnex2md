@@ -114,10 +114,11 @@ class Note {
     this.title = noteDom['Title'][0]
     this.notebook = notebook
     this.content = noteDom['Content'][0]
-    this.attributes = noteDom['Attributes']?.[0]
+    this.attributes = noteDom['Attributes']?.[0] ?? []
     this.resources = noteDom['NoteResource']
       ?.map(noteResourceDom => new NoteResource(noteResourceDom))
       ?.reduce((arr, resource) => [...arr, resource], [])
+      ?? []
   }
 }
 
