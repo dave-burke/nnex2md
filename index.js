@@ -42,13 +42,19 @@ function writeNoteToFile(note) {
   for(const [ name, value ] of Object.entries(note.attributes)) {
     markdown += `\n**${name}:** ${value}`
   }
-  fs.mkdirSync(note.notebook.name)
-  fs.writeFileSync(`${note.notebook.name}/${note.title}.md`, markdown)
+  writeFile(note.notebook.name, `${note.title}.md`, markdown)
+}
+
+function writeFile(dir, fileName, data) {
+  if(!fs.existsSync(dir)) {
+    fs.mkdirSync(dir)
+  }
+  fs.writeFileSync(`${dir}/${fileName}`, data)
 }
 
 function saveResourcesAsFiles(note) {
   for(const resource of note.resources) {
-    console.log(`Save 'assets/${resource.fileName}'`)
+    // writeFile(`${note.notebook.name}/assets/`, resource.fileName, resource.data.bytes)
   }
 }
 
