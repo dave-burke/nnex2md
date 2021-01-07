@@ -47,12 +47,7 @@ function writeNoteToFile(note) {
 
 function saveResourcesAsFiles(note) {
   for(const resource of note.resources) {
-    const mimeType = resource.mime
-    const bytes = resource?.data?.bytes
-    const fileName = resource?.attributes?.fileName
-    if(fileName !== undefined) {
-      console.log(`Save ${mimeType} as ${fileName}`)
-    }
+    console.log(`Save 'assets/${resource.fileName}'`)
   }
 }
 
