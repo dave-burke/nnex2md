@@ -1,6 +1,12 @@
 # nnex2md
 
-This script converts `.nnex` files (exported from [NixNote](https://github.com/baumgarr/Nixnote2), formerly Nevernote) to Markdown.
+This script converts `.nnex` files (exported from
+[NixNote](https://github.com/baumgarr/Nixnote2), formerly Nevernote) to
+Markdown.
+
+Note that this has only been tested on Linux. It should work on Mac, but it may
+not work on Windows without an update to remove filename characters that are
+valid on Linux but not Windows.
 
 ## Usage
 
