@@ -84,12 +84,21 @@ const enMediaPlugin = (notes) => {
       map.set(resource.data.bodyHash, resource)
       return map
     }, new Map())
+  const mimes = notes
+    .map(note => note.resources).flat()
+    .filter(resource => resource?.data.bodyHash !== undefined)
+    .reduce((set, resource) => {
+      set.add(resource.mime)
+      return set
+    }, new Set())
+  console.log(mimes)
   return (turndown) => {
     turndown.rules.blankRule.replacement = function(content, node) {
       if(node.nodeName === 'EN-MEDIA') {
         const hash = node.attributes.getNamedItem('hash').value
         const resource = resourcesByHash.get(hash)
-        return `![${hash}](assets/${resource.fileName})`
+        const markdown = `[${resource.fileName}](assets/${resource.fileName})`
+        return resource.mime.startsWith('image/') ? `!${markdown}` : markdown
       }
     }
   }
