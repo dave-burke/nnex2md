@@ -7,10 +7,11 @@ async function main() {
   const js = await(xml2js.parseStringPromise(xml));
   try {
     const notes = mapNotes(js['nixnote-export'])
-    turndownService.use(enMediaPlugin(notes))
-    const test = notes.find(note => note.guid === 'f6d96c9b-0c5e-4699-aee7-4796399d8951')
-    writeNoteToFile(test)
-    saveResourcesAsFiles(test)
+    turndownService.use(enMediaPlugin(notes)) // handle embedded media
+    for(const note of notes) {
+      writeNoteToFile(note)
+      saveResourcesAsFiles(note)
+    }
   } catch(err) {
     console.log(err)
   }
