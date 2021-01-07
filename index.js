@@ -16,6 +16,7 @@ async function main() {
   }
 }
 
+// Convert raw XML data model into easier to use classes
 function mapNotes(evernote) {
   const notebooks = evernote['Notebook']
   const notebookNamesByGuid = notebooks
@@ -51,8 +52,9 @@ function saveResourcesAsFiles(note) {
   }
 }
 
-// These are just my personal preferences
+// Turndown converts HTML to JSON, and works fine with the XML note content.
 const turndownService = new TurndownService({
+  // These are just my personal preferences
   bulletListMarker: '-',
   emDelimiter: '*',
 })
